@@ -2,33 +2,22 @@ const express = require('express');
 const passport = require('passport');
 
 const AuthService = require('./../services/auth.service');
-
 const router = express.Router();
 const service = new AuthService();
 
+// TODO: importamos el controller de auth
+const AuthController = require('../controllers/auth.controller')
+
+// TODO: usamos dentro del POST el AuthController.Login o AuthController.Login() para limpiar mas el codigo
 router.post(
   '/login',
   passport.authenticate('local', { session: false }),
-  async (req, res, next) => {
-    try {
-      const user = req.user;
-      //realiza el token
-      res.json(service.signToken(user));
-    } catch (error) {
-      next(error);
-    }
-  }
+  AuthController.Login
 );
-router.post('/recovery', async (req, res, next) => {
-  try {
-    const { email } = req.body;
-    const rta = await service.sendRecovery(email);
-    res.json(rta);
-  } catch (error) {
-    next(error);
-  }
-});
+// TODO: usamos dentro del POST el AuthController.Recovery o AuthController.Recovery() para limpiar mas el codigo
+router.post('/recovery', AuthController.Recovery);
 
+// ----------------------------------------
 router.post('/change-password', async (req, res, next) => {
   try {
     const { token, newPassword } = req.body;
